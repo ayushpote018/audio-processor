@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Processor - Vocal Separator & Pitch Shifter</title>
+    <title>Audio Processor Pro - Professional Audio Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,758 +13,665 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #2c3e50;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
+            background: #ffffff;
+            border-radius: 24px;
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
         }
         
         h1 {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+        
+        .upload-zone {
+            border: 3px dashed #cbd5e0;
+            border-radius: 20px;
+            padding: 60px 40px;
             text-align: center;
-            color: #667eea;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
         
-        .upload-section {
-            border: 3px dashed #667eea;
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 30px;
-            transition: all 0.3s;
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
         }
         
-        .upload-section:hover {
-            border-color: #764ba2;
-            background: #f8f9ff;
+        .upload-zone:hover::before {
+            left: 100%;
         }
         
-        .upload-section input[type="file"] {
+        .upload-zone.dragover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+            transform: scale(1.02);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+        
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .upload-zone h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .upload-zone p {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        
+        input[type="file"] {
             display: none;
         }
         
-        .upload-btn {
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: transform 0.2s;
         }
         
-        .upload-btn:hover {
-            transform: scale(1.05);
+        .btn-secondary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
         }
         
-        .btn-group {
+        .btn-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 24px;
+            font-size: 0.9em;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .action-buttons {
             display: flex;
             gap: 15px;
             justify-content: center;
-            margin-top: 20px;
-        }
-        
-        .separator-section, .pitch-section {
-            display: none;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
         
-        .track-container {
-            background: #f8f9ff;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
+        .waveform-card {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        canvas {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .audio-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-card .label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .info-card .value {
+            color: white;
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .track-section {
+            display: none;
+            margin-top: 40px;
+        }
+        
+        .track-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        
+        .track-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
         }
         
         .track-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .track-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #667eea;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .key-badge {
-            background: #667eea;
-            color: white;
-            padding: 8px 20px;
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-weight: bold;
+            font-size: 0.9em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
         
         audio {
             width: 100%;
-            margin: 15px 0;
+            margin: 20px 0;
+            border-radius: 12px;
         }
         
-        .pitch-controls {
-            margin-top: 20px;
+        .control-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #f0f0f0;
         }
         
-        .pitch-label {
+        .control-section h3 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .slider-group {
+            margin: 25px 0;
+        }
+        
+        .slider-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-weight: bold;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #495057;
         }
         
-        .semitone-value {
+        .slider-value {
             color: #667eea;
-            font-size: 1.2em;
+            font-size: 1.3em;
+            font-weight: 700;
         }
         
         input[type="range"] {
             width: 100%;
             height: 8px;
-            border-radius: 5px;
-            background: #ddd;
+            border-radius: 10px;
+            background: linear-gradient(to right, #e9ecef 0%, #e9ecef 100%);
             outline: none;
             -webkit-appearance: none;
+            position: relative;
         }
         
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
-            width: 25px;
-            height: 25px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             cursor: pointer;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.6);
         }
         
         input[type="range"]::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             cursor: pointer;
-        }
-        
-        .key-selector {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-        
-        .key-btn {
-            background: white;
-            border: 2px solid #667eea;
-            color: #667eea;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: bold;
-        }
-        
-        .key-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .key-btn.active {
-            background: #667eea;
-            color: white;
-            box-shadow: 0 0 20px #667eea, 0 0 40px #667eea;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 20px #667eea, 0 0 40px #667eea;
-            }
-            50% {
-                box-shadow: 0 0 30px #667eea, 0 0 60px #667eea;
-            }
-        }
-        
-        .download-btn {
-            background: #28a745;
-            color: white;
-            padding: 12px 30px;
             border: none;
-            border-radius: 50px;
-            font-size: 1em;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: transform 0.2s;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
         }
         
-        .download-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .loading {
-            text-align: center;
-            color: #667eea;
-            font-size: 1.2em;
+        .key-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 10px;
             margin: 20px 0;
         }
         
+        .key-btn {
+            padding: 12px;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            background: white;
+            color: #495057;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .key-btn:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+        
+        .key-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5), 0 0 40px rgba(102, 126, 234, 0.3);
+            animation: pulse-active 2s infinite;
+        }
+        
+        @keyframes pulse-active {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5), 0 0 40px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.7), 0 0 60px rgba(102, 126, 234, 0.5); }
+        }
+        
+        .trim-section {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .trim-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .trim-controls input {
+            padding: 12px;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            width: 120px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        .bpm-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .bpm-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .bpm-display {
+            font-size: 3em;
+            font-weight: 700;
+            color: #1976d2;
+        }
+        
+        .download-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 25px;
+        }
+        
+        .format-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .format-btn {
+            padding: 15px;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            background: white;
+            color: #28a745;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        
+        .format-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .format-btn.active {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-top: 6px solid #667eea;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 0 auto 30px;
         }
         
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: transform 0.2s;
+        
+        .loading-text {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
         }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: scale(1.05);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            transform: scale(1.05);
-        }
-
-        .btn-secondary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
+        
         .processing-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(102, 126, 234, 0.9);
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
             display: none;
             justify-content: center;
             align-items: center;
-            border-radius: 15px;
+            border-radius: 20px;
             z-index: 10;
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
         }
-
+        
         .processing-overlay.active {
             display: flex;
         }
-
-        .track-container {
-            position: relative;
+        
+        .processing-content {
+            text-align: center;
+            color: white;
         }
-
+        
         .mini-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid white;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .upload-zone {
+                padding: 40px 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎵 Audio Processor</h1>
+        <header>
+            <h1>🎵 Audio Processor Pro</h1>
+            <p class="subtitle">Professional Audio Separation • Pitch Shifting • BPM Control</p>
+        </header>
         
-        <div class="upload-section" id="uploadSection">
-            <h2>Upload Your Audio File</h2>
-            <p style="margin: 15px 0; color: #666;">Supports MP3, WAV, FLAC, M4A, OGG</p>
+        <div class="upload-zone" id="uploadZone">
+            <div class="upload-icon">☁️</div>
+            <h2>Drag & Drop Your Audio File</h2>
+            <p>or click to browse • Supports MP3, WAV, FLAC, M4A, OGG</p>
             <input type="file" id="fileInput" accept=".mp3,.wav,.flac,.m4a,.ogg">
-            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
                 Choose File
             </button>
-            <p id="fileName" style="margin-top: 15px; color: #667eea; font-weight: bold;"></p>
+            <p id="fileName" style="margin-top: 20px; color: #667eea; font-weight: 600;"></p>
             
-            <div class="btn-group" id="actionButtons" style="display:none;">
-                <button class="btn-primary" id="pitchOnlyBtn" onclick="pitchShiftOnly()">
-                    Just Change Pitch
-                </button>
-                <button class="btn-secondary" id="separateBtn" onclick="separateVocals()">
-                    Separate Vocals & Instrumental
-                </button>
+            <div class="progress-container" id="uploadProgress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Uploading... 0%</div>
             </div>
         </div>
-
-        <div id="loadingSection" style="display:none;">
+        
+        <div class="waveform-card" id="waveformCard" style="display:none;">
+            <canvas id="waveformCanvas"></canvas>
+            <div class="audio-info" id="audioInfo"></div>
+        </div>
+        
+        <div class="action-buttons" id="actionButtons" style="display:none;">
+            <button class="btn btn-primary" onclick="pitchShiftOnly()">
+                🎚️ Edit Pitch & Speed
+            </button>
+            <button class="btn btn-secondary" onclick="separateVocals()">
+                🎤 Separate Vocals
+            </button>
+            <button class="btn btn-reset" onclick="resetAll()">
+                ↺ Reset All
+            </button>
+        </div>
+        
+        <div class="track-section" id="trackSection">
+            <!-- Track cards will be inserted here -->
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
             <div class="spinner"></div>
-            <div class="loading" id="loadingText">Processing audio... This may take a few minutes</div>
-        </div>
-
-        <div class="separator-section" id="separatorSection">
-            <div class="track-container" id="originalTrack" style="display:none;">
-                <div class="processing-overlay" id="originalProcessing">
-                    <div class="mini-spinner"></div>
-                    <span>Processing pitch shift...</span>
+            <div class="loading-text" id="loadingText">Processing...</div>
+            <div class="progress-container" style="display:block; width:300px;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="processingProgress"></div>
                 </div>
-                <div class="track-header">
-                    <span class="track-title">🎵 Original Track</span>
-                    <span class="key-badge" id="originalKey">Key: -</span>
-                </div>
-                <audio id="originalAudio" controls></audio>
-                
-                <div class="pitch-controls">
-                    <div class="pitch-label">
-                        <span>Pitch Shift (Semitones)</span>
-                        <span class="semitone-value" id="originalSemitone">0</span>
-                    </div>
-                    <input type="range" id="originalSlider" min="-12" max="12" value="0" step="1">
-                    
-                    <div class="pitch-label" style="margin-top: 25px;">
-                        <span>Playback Speed</span>
-                        <span class="semitone-value" id="originalSpeed">1.00x</span>
-                    </div>
-                    <input type="range" id="originalSpeedSlider" min="0" max="3" value="1" step="0.05">
-                    
-                    <div class="key-selector">
-                        <button class="key-btn" onclick="setTargetKey('original', 'C')">C</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'C#')">C#</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'D')">D</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'D#')">D#</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'E')">E</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'F')">F</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'F#')">F#</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'G')">G</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'G#')">G#</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'A')">A</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'A#')">A#</button>
-                        <button class="key-btn" onclick="setTargetKey('original', 'B')">B</button>
-                    </div>
-                    <button class="download-btn" onclick="downloadTrack('original')">
-                        ⬇️ Download Track
-                    </button>
-                </div>
-            </div>
-
-            <div class="track-container" id="instrumentalTrack" style="display:none;">
-                <div class="processing-overlay" id="instrumentalProcessing">
-                    <div class="mini-spinner"></div>
-                    <span>Processing pitch shift...</span>
-                </div>
-                <div class="track-header">
-                    <span class="track-title">🎸 Instrumental Track</span>
-                    <span class="key-badge" id="instrumentalKey">Key: -</span>
-                </div>
-                <audio id="instrumentalAudio" controls></audio>
-                
-                <div class="pitch-controls">
-                    <div class="pitch-label">
-                        <span>Pitch Shift (Semitones)</span>
-                        <span class="semitone-value" id="instrumentalSemitone">0</span>
-                    </div>
-                    <input type="range" id="instrumentalSlider" min="-12" max="12" value="0" step="1">
-                    
-                    <div class="pitch-label" style="margin-top: 25px;">
-                        <span>Playback Speed</span>
-                        <span class="semitone-value" id="instrumentalSpeed">1.00x</span>
-                    </div>
-                    <input type="range" id="instrumentalSpeedSlider" min="0" max="3" value="1" step="0.05">
-                    
-                    <div class="key-selector">
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'C')">C</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'C#')">C#</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'D')">D</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'D#')">D#</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'E')">E</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'F')">F</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'F#')">F#</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'G')">G</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'G#')">G#</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'A')">A</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'A#')">A#</button>
-                        <button class="key-btn" onclick="setTargetKey('instrumental', 'B')">B</button>
-                    </div>
-                    <button class="download-btn" onclick="downloadTrack('instrumental')">
-                        ⬇️ Download Instrumental
-                    </button>
-                </div>
-            </div>
-
-            <div class="track-container" id="vocalsTrack" style="display:none;">
-                <div class="processing-overlay" id="vocalsProcessing">
-                    <div class="mini-spinner"></div>
-                    <span>Processing pitch shift...</span>
-                </div>
-                <div class="track-header">
-                    <span class="track-title">🎤 Vocals Track</span>
-                    <span class="key-badge" id="vocalsKey">Key: -</span>
-                </div>
-                <audio id="vocalsAudio" controls></audio>
-                
-                <div class="pitch-controls">
-                    <div class="pitch-label">
-                        <span>Pitch Shift (Semitones)</span>
-                        <span class="semitone-value" id="vocalsSemitone">0</span>
-                    </div>
-                    <input type="range" id="vocalsSlider" min="-12" max="12" value="0" step="1">
-                    
-                    <div class="pitch-label" style="margin-top: 25px;">
-                        <span>Playback Speed</span>
-                        <span class="semitone-value" id="vocalsSpeed">1.00x</span>
-                    </div>
-                    <input type="range" id="vocalsSpeedSlider" min="0" max="3" value="1" step="0.05">
-                    
-                    <div class="key-selector">
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'C')">C</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'C#')">C#</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'D')">D</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'D#')">D#</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'E')">E</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'F')">F</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'F#')">F#</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'G')">G</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'G#')">G#</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'A')">A</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'A#')">A#</button>
-                        <button class="key-btn" onclick="setTargetKey('vocals', 'B')">B</button>
-                    </div>
-                    <button class="download-btn" onclick="downloadTrack('vocals')">
-                        ⬇️ Download Vocals
-                    </button>
-                </div>
+                <div class="progress-text" id="processingText">Please wait...</div>
             </div>
         </div>
     </div>
-
-    <script>
-        let fileId = null;
-        let sessionId = null;
-        let originalKey = null;
-        let instrumentalOriginalKey = null;
-        let vocalsOriginalKey = null;
-        let currentOriginalSemitones = 0;
-        let currentInstrumentalSemitones = 0;
-        let currentVocalsSemitones = 0;
-        let currentOriginalSpeed = 1.0;
-        let currentInstrumentalSpeed = 1.0;
-        let currentVocalsSpeed = 1.0;
-        let activeAudios = {};
-
-        const keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
-        document.getElementById('fileInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            document.getElementById('fileName').textContent = `Selected: ${file.name}`;
-            
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const response = await fetch('/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    fileId = data.file_id;
-                    document.getElementById('actionButtons').style.display = 'flex';
-                }
-            } catch (error) {
-                alert('Upload failed: ' + error.message);
-            }
-        });
-
-        async function pitchShiftOnly() {
-            if (!fileId) return;
-
-            document.getElementById('loadingSection').style.display = 'block';
-            document.getElementById('loadingText').textContent = 'Detecting key...';
-            document.getElementById('pitchOnlyBtn').disabled = true;
-            document.getElementById('separateBtn').disabled = true;
-
-            try {
-                const response = await fetch('/detect-key', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ file_id: fileId })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    sessionId = data.session_id;
-                    originalKey = data.key;
-
-                    document.getElementById('originalKey').textContent = `Key: ${originalKey}`;
-                    
-                    const audioEl = document.getElementById('originalAudio');
-                    audioEl.src = `/audio/${sessionId}/original.mp3`;
-                    audioEl.load();
-                    activeAudios['original'] = audioEl;
-
-                    document.getElementById('loadingSection').style.display = 'none';
-                    document.getElementById('separatorSection').style.display = 'block';
-                    document.getElementById('originalTrack').style.display = 'block';
-
-                    setupSlider('original');
-                }
-            } catch (error) {
-                alert('Processing failed: ' + error.message);
-                document.getElementById('loadingSection').style.display = 'none';
-                document.getElementById('pitchOnlyBtn').disabled = false;
-                document.getElementById('separateBtn').disabled = false;
-            }
-        }
-
-        async function separateVocals() {
-            if (!fileId) return;
-
-            document.getElementById('loadingSection').style.display = 'block';
-            document.getElementById('loadingText').textContent = 'Separating vocals... This may take a few minutes';
-            document.getElementById('separateBtn').disabled = true;
-            document.getElementById('pitchOnlyBtn').disabled = true;
-
-            try {
-                const response = await fetch('/separate', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ file_id: fileId })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    sessionId = data.session_id;
-                    instrumentalOriginalKey = data.instrumental_key;
-                    vocalsOriginalKey = data.vocals_key;
-
-                    document.getElementById('instrumentalKey').textContent = `Key: ${instrumentalOriginalKey}`;
-                    document.getElementById('vocalsKey').textContent = `Key: ${vocalsOriginalKey}`;
-
-                    const instAudio = document.getElementById('instrumentalAudio');
-                    const vocAudio = document.getElementById('vocalsAudio');
-                    
-                    instAudio.src = `/audio/${sessionId}/instrumental.mp3`;
-                    instAudio.load();
-                    vocAudio.src = `/audio/${sessionId}/vocals.mp3`;
-                    vocAudio.load();
-                    
-                    activeAudios['instrumental'] = instAudio;
-                    activeAudios['vocals'] = vocAudio;
-
-                    document.getElementById('loadingSection').style.display = 'none';
-                    document.getElementById('separatorSection').style.display = 'block';
-                    document.getElementById('instrumentalTrack').style.display = 'block';
-                    document.getElementById('vocalsTrack').style.display = 'block';
-
-                    setupSlider('instrumental');
-                    setupSlider('vocals');
-                }
-            } catch (error) {
-                alert('Separation failed: ' + error.message);
-                document.getElementById('loadingSection').style.display = 'none';
-                document.getElementById('separateBtn').disabled = false;
-                document.getElementById('pitchOnlyBtn').disabled = false;
-            }
-        }
-
-        function setupSlider(trackType) {
-            const slider = document.getElementById(`${trackType}Slider`);
-            const speedSlider = document.getElementById(`${trackType}SpeedSlider`);
-            
-            let timeout = null;
-            slider.addEventListener('input', (e) => {
-                const semitones = parseInt(e.target.value);
-                
-                if (trackType === 'original') currentOriginalSemitones = semitones;
-                else if (trackType === 'instrumental') currentInstrumentalSemitones = semitones;
-                else if (trackType === 'vocals') currentVocalsSemitones = semitones;
-                
-                document.getElementById(`${trackType}Semitone`).textContent = 
-                    semitones > 0 ? `+${semitones}` : semitones;
-                
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    pitchShift(trackType, semitones);
-                }, 800);
-            });
-
-            // Speed slider
-            speedSlider.addEventListener('input', (e) => {
-                const speed = parseFloat(e.target.value);
-                
-                if (trackType === 'original') currentOriginalSpeed = speed;
-                else if (trackType === 'instrumental') currentInstrumentalSpeed = speed;
-                else if (trackType === 'vocals') currentVocalsSpeed = speed;
-                
-                document.getElementById(`${trackType}Speed`).textContent = speed.toFixed(2) + 'x';
-                
-                // Apply speed to audio element immediately
-                const audio = activeAudios[trackType];
-                if (audio) {
-                    audio.playbackRate = speed;
-                }
-            });
-        }
-
-        async function pitchShift(trackType, semitones) {
-            const audio = activeAudios[trackType];
-            if (!audio) return;
-
-            const wasPlaying = !audio.paused;
-            const currentTime = audio.currentTime;
-            
-            // Show loading overlay
-            const overlay = document.getElementById(`${trackType}Processing`);
-            overlay.classList.add('active');
-
-            if (semitones === 0) {
-                audio.src = `/audio/${sessionId}/${trackType}.mp3`;
-                audio.load();
-                audio.addEventListener('loadedmetadata', function onLoad() {
-                    audio.currentTime = currentTime;
-                    if (wasPlaying) audio.play().catch(() => {});
-                    overlay.classList.remove('active');
-                    audio.removeEventListener('loadedmetadata', onLoad);
-                });
-                return;
-            }
-
-            try {
-                const response = await fetch('/pitch-shift', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        session_id: sessionId,
-                        track_type: trackType,
-                        semitones: semitones
-                    })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    audio.src = `/audio/${sessionId}/${trackType}_shifted_${semitones}.mp3?t=${Date.now()}`;
-                    audio.load();
-                    
-                    audio.addEventListener('loadedmetadata', function onLoad() {
-                        audio.currentTime = currentTime;
-                        if (wasPlaying) {
-                            audio.play().catch(() => {});
-                        }
-                        overlay.classList.remove('active');
-                        audio.removeEventListener('loadedmetadata', onLoad);
-                    });
-                    
-                    audio.addEventListener('error', function onError(e) {
-                        console.error('Audio load error:', e);
-                        overlay.classList.remove('active');
-                        audio.removeEventListener('error', onError);
-                    });
-                }
-            } catch (error) {
-                console.error('Pitch shift failed:', error);
-                overlay.classList.remove('active');
-            }
-        }
-
-        function setTargetKey(trackType, targetKey) {
-            let originalKeyValue;
-            if (trackType === 'original') originalKeyValue = originalKey;
-            else if (trackType === 'instrumental') originalKeyValue = instrumentalOriginalKey;
-            else originalKeyValue = vocalsOriginalKey;
-
-            const originalIndex = keys.indexOf(originalKeyValue);
-            const targetIndex = keys.indexOf(targetKey);
-            
-            let semitones = targetIndex - originalIndex;
-            if (semitones > 6) semitones -= 12;
-            if (semitones < -6) semitones += 12;
-
-            const slider = document.getElementById(`${trackType}Slider`);
-            slider.value = semitones;
-            
-            if (trackType === 'original') currentOriginalSemitones = semitones;
-            else if (trackType === 'instrumental') currentInstrumentalSemitones = semitones;
-            else currentVocalsSemitones = semitones;
-
-            document.getElementById(`${trackType}Semitone`).textContent = 
-                semitones > 0 ? `+${semitones}` : semitones;
-            
-            // Highlight active key button
-            updateActiveKeyButton(trackType, targetKey);
-            
-            pitchShift(trackType, semitones);
-        }
-
-        function updateActiveKeyButton(trackType, activeKey) {
-            // Find the track container
-            const trackContainer = document.getElementById(`${trackType}Track`);
-            if (!trackContainer) return;
-            
-            // Remove active class from all buttons in this track
-            const buttons = trackContainer.querySelectorAll('.key-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            // Add active class to the clicked button
-            buttons.forEach(btn => {
-                if (btn.textContent.trim() === activeKey) {
-                    btn.classList.add('active');
-                }
-            });
-        }
-
-        function downloadTrack(trackType) {
-            let semitones, speed;
-            if (trackType === 'original') {
-                semitones = currentOriginalSemitones;
-                speed = currentOriginalSpeed;
-            } else if (trackType === 'instrumental') {
-                semitones = currentInstrumentalSemitones;
-                speed = currentInstrumentalSpeed;
-            } else {
-                semitones = currentVocalsSemitones;
-                speed = currentVocalsSpeed;
-            }
-            
-            window.location.href = `/download/${sessionId}/${trackType}/${semitones}/${speed}`;
-        }
-    </script>
+    
+    <script src="/static/app.js"></script>
 </body>
 </html>
